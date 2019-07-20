@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="init" name="medicon">
+    <target name="init">
+        <tstamp prefix="timestamp"/>
+        <buildnumber/>
+        <property name="build.compiler" value="modern"/>
+        <property name="srcdir" value="${basedir}/src"/>
+        <property name="classdir" value="${basedir}/build/classes"/>
+        <property name="libdir" value="${basedir}/libs"/>
+        <path id="libs">
+            <pathelement location="${java.class.path}"/>
+            <pathelement location="${classdir}"/>
+            <pathelement location="${basedir}/libs"/>
+            <fileset dir="${libdir}">
+                <include name="**/*.jar"/>
+            </fileset>
+            <pathelement location="${srcdir}"/>
+        </path>
+        <echo message="PROPERTIES:"/>
+        <echo message="build............${build.number}"/>
+        <echo message="basedir...........${basedir}"/>
+        <echo message="classdir..........${classdir}"/>
+        <echo message="srcdir............${srcdir}"/>
+        <echo message="libdir............${libdir}"/>
+        <pathconvert property="winclasspath" refid="libs" targetOS="windows"/>
+        <pathconvert property="unixclasspath" refid="libs" targetOS="unix"/>
+    </target>
+    <target depends="init" name="clean">
+        <delete file="medicon.jar"/>
+        <delete>
+            <fileset dir="${classdir}">
+                <include name="**/*~"/>
+                <include name="**/*.class"/>
+            </fileset>
+        </delete>
+    </target>
+    <target depends="init" name="compile">
+        <javac classpathref="libs" debug="true" deprecation="false" destdir="${classdir}" includes="dataserver/**" srcdir="${srcdir}" target="1.6" source="1.6">
+        </javac>
+        <copy file="${basedir}/conf/db.properties" todir="${classdir}" />
+        <copy file="${basedir}/conf/log4j.properties" todir="${classdir}" />
+        <copy file="${basedir}/conf/server.properties" todir="${classdir}" />
+    </target>
+    <target depends="compile" name="jar.server">
+        <jar basedir="${classdir}" compress="true" includes="dataserver/**" jarfile="medicon-server.jar">
+            <exclude name="**/*.java"/>
+            <exclude name="**/*.jar"/>
+            <exclude name="**/*.form"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="dataserver.Server"/>
+                <attribute name="Class-Path" value=". libs/mysql-connector-java-5.0.6-bin.jar libs/log4j-1.2.14.jar libs/commons-pool-1.2.jar libs/commons-logging-api.jar libs/commons-lang-2.4.jar libs/commons-digester-1.7.jar libs/commons-dbcp-1.2.1.jar libs/commons-collections-3.1.jar"/>
+            </manifest>
+        </jar>
+    </target>
+    <target depends="compile" name="jar.client">
+        <jar basedir="${classdir}" compress="true" includes="dataserver/**" jarfile="medicon-client.jar">
+            <exclude name="**/*.java"/>
+            <exclude name="**/*.jar"/>
+            <exclude name="**/*.form"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="dataserver.Client"/>
+                <attribute name="Class-Path" value=". libs/mysql-connector-java-5.0.6-bin.jar libs/log4j-1.2.14.jar libs/commons-pool-1.2.jar libs/commons-logging-api.jar libs/commons-lang-2.4.jar libs/commons-digester-1.7.jar libs/commons-dbcp-1.2.1.jar libs/commons-collections-3.1.jar"/>
+            </manifest>
+        </jar>
+    </target>
+    <target depends="compile" name="jar.echoServer">
+        <jar basedir="${classdir}" compress="true" includes="dataserver/**" jarfile="medicon-echoserver.jar">
+            <exclude name="**/*.java"/>
+            <exclude name="**/*.jar"/>
+            <exclude name="**/*.form"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="dataserver.EchoServer"/>
+                <attribute name="Class-Path" value=". libs/mysql-connector-java-5.0.6-bin.jar libs/log4j-1.2.14.jar libs/commons-pool-1.2.jar libs/commons-logging-api.jar libs/commons-lang-2.4.jar libs/commons-digester-1.7.jar libs/commons-dbcp-1.2.1.jar libs/commons-collections-3.1.jar"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="TestClient" depends="compile">
+        <java classpathref="libs" classname="dataserver.Client" failonerror="true">
+        </java>
+    </target>
+    <target name="TestServer" depends="compile">
+        <java classpathref="libs" classname="dataserver.Server" failonerror="true">
+        </java>
+    </target>
+    <target name="TestEchoServer" depends="compile">
+        <java classpathref="libs" classname="dataserver.EchoServer" failonerror="true">
+        </java>
+    </target>
+    
+</project>

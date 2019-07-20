@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="WirelessServer_v1.1/src"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-dbcp-1.2.1.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-logging-api.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/commons-pool-1.2.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/lib/mysql-connector-java-5.0.6-bin.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/dist_svn/medicon.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-dbcp-1.2.1.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-dbcp-1.2.2.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-digester-1.7.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-lang-2.4.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-logging-api.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/commons-pool-1.2.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/libs/mysql-connector-java-5.0.6-bin.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/medicon-client.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/medicon-echoserver.jar"/>
+	<classpathentry kind="lib" path="WirelessServer_v1.1/medicon-server.jar"/>
+	<classpathentry kind="output" path="WirelessServer_v1.1/build_svn/classes"/>
+</classpath>
