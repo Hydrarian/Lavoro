@@ -61,7 +61,7 @@ public class Fatture1 extends JFrame {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) { e1.printStackTrace(); } catch (InstantiationException e1) { e1.printStackTrace(); } catch (IllegalAccessException e1) { e1.printStackTrace(); } catch (UnsupportedLookAndFeelException e1) { e1.printStackTrace(); }
 		
-		String[] elencoCompagnie = { "-Seleziona una compagnia-" , "Berardi", "Vitman", "Vibolt" };
+		String[] elencoCompagnie = { "-Seleziona una company-" , "Berardi", "Vitman", "Vibolt" };
 		JComboBox listaCompagnia = new JComboBox(elencoCompagnie);
 
 		frmFatturazioneCicloPassivo.getContentPane().setLayout(null);
@@ -293,42 +293,26 @@ public class Fatture1 extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == listaCompagnia) {
 				msg = (String)listaCompagnia.getSelectedItem();
+				
 					switch (msg) {
 					
-						case "Berardi": labelEsplicativo.setText("Hai selezionato come company: BERARDI");
-							Icon logoBerardi;
-							try {
-								logoBerardi = impostaLogo(msg,400,310);
-								lblNewLabel.setIcon(logoBerardi);
-							} catch (IOException e1) { e1.printStackTrace(); }
-							btnScarica.setEnabled(true);
-							btnStampa.setEnabled(true);
-							btnArchiviaFatture.setEnabled(true);
+						case "Berardi": 
+							Icon logoBerardi = null;
+							impostaLabelEAttivaPulsanti("BERARDI", logoBerardi, labelEsplicativo, lblNewLabel, btnScarica, btnStampa, btnArchiviaFatture, 400, 310);
 						break;
 						
-						case "Vitman": labelEsplicativo.setText("Hai selezionato come company: VITMAN");
-							Icon logoVitman;
-							try {
-								logoVitman = impostaLogo(msg,320,120);
-								lblNewLabel.setIcon(logoVitman);
-							} catch (IOException e1) { e1.printStackTrace(); }
-							btnScarica.setEnabled(true);
-							btnStampa.setEnabled(true);
-							btnArchiviaFatture.setEnabled(true);
+						case "Vitman": 
+							Icon logoVitman = null;
+							impostaLabelEAttivaPulsanti("VITMAN", logoVitman, labelEsplicativo, lblNewLabel, btnScarica, btnStampa, btnArchiviaFatture, 320, 120);
 						break;
 						
-						case "Vibolt": labelEsplicativo.setText("Hai selezionato come company: VIBOLT");
-							Icon logoVibolt;
-							try {
-								logoVibolt = impostaLogo(msg,320,120);
-								lblNewLabel.setIcon(logoVibolt);
-							} catch (IOException e1) { e1.printStackTrace(); }
-							btnScarica.setEnabled(true);
-							btnStampa.setEnabled(true);
-							btnArchiviaFatture.setEnabled(true);
+						case "Vibolt": 
+							Icon logoVibolt = null;
+							impostaLabelEAttivaPulsanti("VIBOLT", logoVibolt, labelEsplicativo, lblNewLabel, btnScarica, btnStampa, btnArchiviaFatture, 320, 120);
 						break;
 						
-						case "-Seleziona una compagnia-": labelEsplicativo.setText("Non hai selezionato nessuna compagnia!");
+						case "-Seleziona una company-": 
+							labelEsplicativo.setText("Non hai selezionato nessuna company!");
 							btnScarica.setEnabled(false);
 							btnStampa.setEnabled(false);
 							btnArchiviaFatture.setEnabled(false);
@@ -346,6 +330,21 @@ public class Fatture1 extends JFrame {
 		}
 //=======================================
 
+//NEL MOMENTO IN CUI SELEZIONO UNA COMPANY DAL COMBOBOX: imposta il label "hai scelto la company... e attiva i pulsanti==============================
+    public void impostaLabelEAttivaPulsanti(String companySelezionata, Icon iconaDaImpostare, JLabel labelEsplic, JLabel nuovoLabel, JButton pulsanteScarica, JButton pulsanteStampa, JButton pulsanteArchivia, int dimLogoX, int dimLogoY) {
+    	labelEsplic.setText("Hai selezionato come company:" + companySelezionata);
+		//Icon iconaDaImpostare;
+		try {
+			iconaDaImpostare = impostaLogo(msg,dimLogoX,dimLogoY);
+			nuovoLabel.setIcon(iconaDaImpostare);
+		} catch (IOException e1) { e1.printStackTrace(); }
+		pulsanteScarica.setEnabled(true);
+		pulsanteStampa.setEnabled(true);
+		pulsanteArchivia.setEnabled(true);
+    }
+//=========================================================================
+    
+    
 //mostra il logo=========================
 	public Icon impostaLogo(String compagnia, int x, int y) throws IOException {
 		String nomeLogo = compagnia + ".png";

@@ -32,6 +32,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.printing.Orientation;
 import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.printing.PDFPrintable;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -111,19 +112,6 @@ public class archiviaFile extends JFrame {
 	
 //inizializzazione del programma e dell'interfaccia grafica===============================================
 	public archiviaFile(String compagniaScelta) throws JSchException, SftpException, IOException {
-		/*switch (compagniaScelta) {
-		case "Berardi": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Barcode\\"; 	//DA CAMBIARE	
-            break; 
-		case "Vitman": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Barcode\\";	
-            break; 
-		case "Vibolt": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Barcode\\";
-            break; 
-		default:
-			//System.out.println("Errore in stampaFile.");
-		}*/
 		
 		switch (compagniaScelta) {
 		case "Berardi": 
@@ -208,14 +196,6 @@ public class archiviaFile extends JFrame {
         File folderA = new File(pathArchiviati+"Barcode\\");  
 		File[] listOfFilesInA = folderA.listFiles();
     	ArrayList<String> listaFile = new ArrayList<String>();
-    	
-/*Controllo/aggiungo numero di ristampe sul foglio excel Barcode\\NUMERO RISTAMPE.xlsx
-    	String excelFileName = pathArchiviati+"Barcode\\NUMERO RISTAMPE.xlsx";	//nome del file excel 
-		String sheetName = "Foglio1";											//name of sheet
-		HSSFWorkbook wb = new HSSFWorkbook();
-		HSSFSheet sheet = wb.createSheet(sheetName) ;
-		HSSFCell cell = row.getCell(colnr);
-		*/
     	
 //Aggiungo le righe in tabella e leggo sul file del numero delle ristampe
     	String nomeFileInTxt= null;
@@ -327,7 +307,9 @@ public class archiviaFile extends JFrame {
         	public void actionPerformed(ActionEvent e) {
         		try {
 					ristampaSelezionati(compagniaScelta,table,listaFile);
-					
+					archiviaFile a= new archiviaFile(compagniaScelta);
+					a.setVisible(true);
+					dispose();
 				} catch (InvalidPasswordException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
@@ -371,8 +353,7 @@ public class archiviaFile extends JFrame {
                     } catch (IOException e1) {
                         e1.printStackTrace();
                         }
-               // }
-            } 
+            		} 
         } );
         
       //imposto l'icona del pulsante===========================================
@@ -407,6 +388,16 @@ public class archiviaFile extends JFrame {
 
 //==========================================================================================================
 	
+	//funzione per la stampa dei file
+	public void stampaDoc(String filePath) throws InvalidPasswordException, IOException, PrinterException {
+		PDDocument doc = PDDocument.load(new File(filePath));
+		PDFPrintable printable = new PDFPrintable(doc);
+		PrinterJob job = PrinterJob.getPrinterJob();
+		job.setPrintable(printable);
+		job.print();
+		doc.close();	//chiudo il documento
+	}
+	
 	@SuppressWarnings("deprecation")
 	public void ristampaSelezionati(String compagniaScelta , JTable tabella, ArrayList<String> listaFile) throws InvalidPasswordException, IOException, PrintException, PrinterException, JSchException, SftpException {
 		int rows = tabella.getRowCount();
@@ -422,57 +413,10 @@ public class archiviaFile extends JFrame {
 				//System.out.println("tabella.getValueAt(i,0) "+(String) tabella.getValueAt(i,0));
 			}
 		}
-		
-		PrinterJob job = PrinterJob.getPrinterJob();
-	    PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-	    boolean ok = job.printDialog(attributes);
 	    
 		for(int i=0; i<listaFileDaRistampare.size(); i++) {
-			PDDocument document = PDDocument.load(new File(pathArchiviati +"\\Barcode\\" +listaFileDaRistampare.get(i)));
-			
-			job.setPageable(new PDFPageable(document, Orientation.AUTO, false, 300));
-				
-			    Attribute[] attributeArray = attributes.toArray();
-			    for (Attribute a : attributeArray) {
-			        //System.out.println(a.getName() + ": " + a);
-			    }
-			
-			    Attribute copies = attributes.get(Copies.class);
-			    Attribute media = attributes.get(Media.class);
-			    Attribute mediaPrintableArea = attributes.get(MediaPrintableArea.class);
-			    Attribute mediaTray = attributes.get(MediaTray.class);
-			    Attribute orientationRequested = attributes.get(OrientationRequested.class);
-			    Attribute sides = attributes.get(Sides.class);
-			    
-			    //attributes.add(new PageRanges(1));		//STAMPO SOLO LA PRIMA PAGINA DELLA COPIA ARCHIVA
-			
-			    attributes.remove(Sides.class);
-			    attributes.add(Sides.DUPLEX);
-			    
-			    job.print();		//mando in stampa il documento
-			    document.close();	//chiudo il documento
-			    //job.cancel();  
-			    
-			    String nomeFileInTxt=null;
-			    String numeroVolteStampato=null;
-			    /*
-			    BufferedReader in = new BufferedReader(new FileReader(pathArchiviati+"Barcode\\prova.txt"));
-			    String line = null;
-	     		while( (line = in.readLine())!= null ){
-	     		        // \\s+ means any number of whitespaces between tokens
-	     		       String [] tokens = line.split("\\s+");
-	     		       nomeFileInTxt = tokens[0];
-	     		       numeroVolteStampato = tokens[1];
-	     		       
-	     		      if (listaFileDaRistampare.get(i).equals(nomeFileInTxt)) {
-	     		    	 int numero_ristampe=Integer.parseInt(numeroVolteStampato)+1;
-	     		    	 BufferedWriter out = new BufferedWriter(new FileWriter(pathArchiviati+"Barcode\\prova.txt"));
-	     		    	 line = line.replaceAll(nomeFileInTxt + " " + numeroVolteStampato, nomeFileInTxt + " " + numero_ristampe); // as strings are immutable in java
-	     		    	 out.write(line);
-	                  	}
-	     		    }
-			    */
-				
+			stampaDoc(pathArchiviati +"\\Barcode\\" +listaFileDaRistampare.get(i));
+
 //controllo se il file ha allegato la copia di cortesia e se c'è la stampo tutta
 			    File percorsoDaStampare = new File(pathArchiviati);	//DA MODIFICARE
 			    File [] fileInDaStampare = percorsoDaStampare.listFiles();		//elenco tutti i file della cartella del percorso path
@@ -484,29 +428,7 @@ public class archiviaFile extends JFrame {
 		    		
 		    		//se esiste un allegato del file col barcode lo stampo tutto
 			    	if(fileInDaStampare[k].isFile() & nomeFileAllegato.equals(nomeFileArchivaSenzaEstensione+"_A1.pdf")) {
-
-			    		PDDocument documentAllegato = PDDocument.load(new File(percorsoDaStampare +"\\"+ fileInDaStampare[k].getName()));
-						
-						 job.setPageable(new PDFPageable(documentAllegato));
-							
-						    Attribute[] attributeArray2 = attributes.toArray();
-						    for (Attribute a : attributeArray2) {
-						        //System.out.println(a.getName() + ": " + a);
-						    }
-						
-						    Attribute copies2 = attributes.get(Copies.class);
-						    Attribute media2 = attributes.get(Media.class);
-						    Attribute mediaPrintableArea2 = attributes.get(MediaPrintableArea.class);
-						    Attribute mediaTray2 = attributes.get(MediaTray.class);
-						    Attribute orientationRequested2 = attributes.get(OrientationRequested.class);
-						    Attribute sides2 = attributes.get(Sides.class);
-						
-						    attributes.remove(Sides.class);
-						    attributes.add(Sides.DUPLEX);
-						    //System.out.println("PRIMA DEL PRINT");
-						    job.print();		//mando in stampa il documento
-						    documentAllegato.close();	//chiudo il documento
-						    //System.out.println("Ho finito di stampare la copia cortesia");
+			    		stampaDoc(percorsoDaStampare +"\\"+ fileInDaStampare[k].getName());
 			    	} 
 			    }	
 		}

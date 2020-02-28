@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,6 +67,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.Rectangle;
 import javax.swing.SwingConstants;
 import javax.swing.JProgressBar;
+
+import org.python.util.PythonInterpreter;
 
 public class scaricaFile extends JFrame {
 

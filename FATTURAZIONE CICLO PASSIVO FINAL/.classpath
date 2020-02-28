@@ -14,5 +14,10 @@
 	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/Librerie Java/pdfbox-2.0.13.jar"/>
 	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/Librerie Java/pdf-renderer-1.0.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/Librerie Java/poi-4.0.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/pdfbox-2.0.17.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/fontbox-2.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/tommolini/Downloads/pdfbox-2.0.3.jar"/>
+	<classpathentry kind="lib" path="C:/jython2.5.3rc1/jython.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

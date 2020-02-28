@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.BufferedWriter;
@@ -34,6 +35,8 @@ import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.encryption.InvalidPasswordException;
 import org.apache.pdfbox.printing.Orientation;
 import org.apache.pdfbox.printing.PDFPageable;
+import org.apache.pdfbox.printing.PDFPrintable;
+import org.apache.pdfbox.printing.Scaling;
 
 import com.itextpdf.awt.geom.Rectangle;
 import com.itextpdf.text.Document;
@@ -119,19 +122,6 @@ public class stampaFile extends JFrame {
 	
 //inizializzazione del programma e dell'interfaccia grafica===============================================
 	public stampaFile(String compagniaScelta) throws JSchException, SftpException, IOException {
-		/*switch (compagniaScelta) {
-		case "Berardi": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Barcode\\"; 	//DA CAMBIARE	
-            break; 
-		case "Vitman": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Barcode\\";	
-            break; 
-		case "Vibolt": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Barcode\\"; \\BER-OFFICE\FattureB2B\For\VIT\Da stampare
-            break; 
-		default:
-			//System.out.println("Errore in stampaFile.");
-		}*/
 		
 		switch (compagniaScelta) {
 		case "Berardi": 
@@ -400,52 +390,42 @@ public class stampaFile extends JFrame {
         //================================================================================
 }
 	
-	public void stampaFatture(List<String> listaFileDaStampare) throws Exception, PrinterException, InvalidPasswordException, IOException {
-		
+	//funzione per la stampa dei file
+	public void stampaDoc(String filePath) throws InvalidPasswordException, IOException, PrinterException {
+		PDDocument doc = PDDocument.load(new File(filePath));
+		PDFPrintable printable = new PDFPrintable(doc);
 		PrinterJob job = PrinterJob.getPrinterJob();
-	    PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
-	    boolean ok = job.printDialog(attributes);
-	    
+		job.setPrintable(printable);
+		job.print();
+		doc.close();	//chiudo il documento
+	}
+	
+	//funzione per archiviare il file o una directory
+	public void archivia(String filePath, String pathDestinazione, boolean isDirectory) throws IOException {
+		System.out.println("FUNZIONE ARCHIVIA");
+		//ARCHIVIO IL FILE nella directory di destinazione
+	    File directoryDestinazione = new File(pathDestinazione);
+	    File fileDaArchiviare= new File(filePath);
+	    System.out.println("h");
+	    if (isDirectory==false) FileUtils.copyFileToDirectory(fileDaArchiviare, directoryDestinazione);	//se è file
+	    	else FileUtils.moveDirectory(fileDaArchiviare, directoryDestinazione);						//se è cartella
+		System.out.println("i");
+		fileDaArchiviare.delete();		//elimino la copia di archiva con barcode dalla cartella /Da stampare/Barcode
+	}
+	
+public void stampaFatture(List<String> listaFileDaStampare) throws Exception, PrinterException, InvalidPasswordException, IOException, IllegalArgumentException {
+		
 	    //stampo tutti i file selezionati nella tabella (questi sono i file di archiva pdf con barcode)
 		for (int i=0; i<listaFileDaStampare.size(); i++) {
-			PDDocument document = PDDocument.load(new File(pathBarcode + listaFileDaStampare.get(i)));
-			System.out.println("a");
-			 job.setPageable(new PDFPageable(document));
-			 System.out.println("b");
-			    Attribute[] attributeArray = attributes.toArray();
-			    for (Attribute a : attributeArray) {
-			        //System.out.println(a.getName() + ": " + a);
-			    }
-			    System.out.println("c");
-			    Attribute copies = attributes.get(Copies.class);
-			    Attribute media = attributes.get(Media.class);
-			    Attribute mediaPrintableArea = attributes.get(MediaPrintableArea.class);
-			    System.out.println("d");
-			    Attribute mediaTray = attributes.get(MediaTray.class);
-			    Attribute orientationRequested = attributes.get(OrientationRequested.class);
-			    Attribute sides = attributes.get(Sides.class);
-			    
-			    //attributes.add(new PageRanges(1));		//STAMPO SOLO LA PRIMA PAGINA DELLA COPIA ARCHIVA
-			    System.out.println("e");
-			    attributes.remove(Sides.class);
-			    attributes.add(Sides.DUPLEX);
-			    attributes.add(MediaSizeName.ISO_A6);
-			    System.out.println("f");
-			    job.print();		//mando in stampa il documento
-			    document.close();	//chiudo il documento
-			    //job.cancel();
-			    System.out.println("g");
-//ARCHIVIO IL FILE PDF CON BARCODE IN ARCHIVIATI/BARCODE
-			    File dirAllegatiBarcode = new File(pathArchiviati+"\\Barcode");
-			    File fileDaArch= new File(pathBarcode+listaFileDaStampare.get(i));
-				//System.out.println(dirAllegatiBarcode);
-				//System.out.println("Sto archiviando il file "+listaFileDaStampare.get(i));
-			    System.out.println("h");
-				FileUtils.copyFileToDirectory(fileDaArch, dirAllegatiBarcode);
-				//System.out.println("fileDaArch "+ fileDaArch);
-				System.out.println("i");
-//==============================================================================  
-				
+			
+			try {stampaDoc(pathBarcode + listaFileDaStampare.get(i));}
+				catch (PrinterException e) {System.out.println("Impossibile stampare file ");}
+				catch (IOException e) {System.out.println("Impossibile stampare file ");}
+				catch (IllegalArgumentException e) {System.out.println("Impossibile stampare il file ");}
+			
+			
+			archivia(pathBarcode+listaFileDaStampare.get(i), pathArchiviati+"\\Barcode", false);
+
 //controllo se il file ha allegato la copia di cortesia e se c'è la stampo tutta
 			    File percorsoDaStampare = new File(pathDaStampare);	//DA MODIFICARE
 			    File [] fileInDaStampare = percorsoDaStampare.listFiles();		//elenco tutti i file della cartella del percorso path
@@ -458,67 +438,24 @@ public class stampaFile extends JFrame {
 		    		System.out.println(nomeFileAllegato);
 		    		//se esiste un allegato del file col barcode lo stampo tutto
 			    	if(fileInDaStampare[k].isFile() & nomeFileAllegato.equals(nomeFileArchivaSenzaEstensione+"_A1.pdf")) {
-			    		System.out.println("nn");
-			    		System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
-			    		PDDocument documentAllegato = PDDocument.load(new File(percorsoDaStampare +"\\"+ fileInDaStampare[k].getName()));
 			    		
-			    		System.out.println("oo");
-			    		job.setPageable(new PDFPageable(documentAllegato, Orientation.AUTO, false, 300));
-						 System.out.println("pp");
-						    Attribute[] attributeArray2 = attributes.toArray();
-						    for (Attribute a : attributeArray2) {
-						        //System.out.println(a.getName() + ": " + a);
-						    }
-						    System.out.println("qq");
-						    Attribute copies2 = attributes.get(Copies.class);
-						    Attribute media2 = attributes.get(Media.class);
-						    Attribute mediaPrintableArea2 = attributes.get(MediaPrintableArea.class);
-						    Attribute mediaTray2 = attributes.get(MediaTray.class);
-						    Attribute orientationRequested2 = attributes.get(OrientationRequested.class);
-						    Attribute sides2 = attributes.get(Sides.class);
-						    
-						    System.out.println("rr");
-						    attributes.remove(Sides.class);
-						    attributes.add(Sides.DUPLEX);
-						    //System.out.println("PRIMA DEL PRINT");
-						    System.out.println("ss");
-						    
-						    job.print();
-						    
-						    System.out.println("tt");
-						    documentAllegato.close();	//chiudo il documento
-						    //System.out.println("Ho finito di stampare la copia cortesia");
-						    System.out.println("uu");
-						    //sposto la copia di cortesia in ARCHIVIATI
-						    File dirArchiviati = new File(pathArchiviati);
-						    File fileCortesiaDaArch= new File(""+fileInDaStampare[k]);
-						    System.out.println("vv");
-						    FileUtils.copyFileToDirectory(fileCortesiaDaArch, dirArchiviati);
-							//System.out.println("fileDaArch "+ fileCortesiaDaArch);
-						    System.out.println("zz");
-							fileCortesiaDaArch.delete();
-							System.out.println("FINE ALLEGATO");
+			    		try {stampaDoc(percorsoDaStampare +"\\"+ fileInDaStampare[k].getName());}
+			    			catch (PrinterException e) {System.out.println("Impossibile stampare file ");}
+							catch (IOException e) {System.out.println("Impossibile stampare file ");}
+			    			catch (IllegalArgumentException e) {System.out.println("Impossibile stampare file ");}
+			    		archivia(""+fileInDaStampare[k], pathArchiviati, false);
 							
 			    	} else if(fileInDaStampare[k].isFile() & nomeFileAllegato.startsWith(nomeFileArchivaSenzaEstensione)){					//caso degli altri file(xml ecc...)
-			    		//sposto gli altri file in ARCHIVIATI
-					    File dirArchiviati = new File(pathArchiviati);
-					    File fileAltroDaArch= new File(""+fileInDaStampare[k]);
-					    FileUtils.copyFileToDirectory(fileAltroDaArch, dirArchiviati);
-						//System.out.println("fileAltroDaArch "+ fileAltroDaArch);
-					    System.out.println("p");
-						fileAltroDaArch.delete();
-						System.out.println("q");
+			    		
+			    		archivia(""+fileInDaStampare[k], pathArchiviati, false);
+			    		
 			    	} else if (fileInDaStampare[k].isDirectory() & nomeFileAllegato.startsWith(nomeFileArchivaSenzaEstensione)) {
-			    		File dirArchiviati = new File(pathArchiviati+nomeFileArchivaSenzaEstensione);
-			    		File CartellaDaArch= new File(""+fileInDaStampare[k]);
-			    		System.out.println("r");
-			    		FileUtils.moveDirectory(CartellaDaArch, dirArchiviati);
-			    		System.out.println("s");
+			    		
+			    		archivia(""+fileInDaStampare[k], pathArchiviati+nomeFileArchivaSenzaEstensione, true);
+			    	
 			    	}
 			    }
 			    System.out.println("t");
-			    fileDaArch.delete();		//elimino la copia di archiva con barcode dalla cartella /Da stampare/Barcode
-			    System.out.println("u");
 		}
 	}
 //==========================================================================================================
