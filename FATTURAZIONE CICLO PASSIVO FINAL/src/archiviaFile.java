@@ -115,7 +115,7 @@ public class archiviaFile extends JFrame {
 		
 		switch (compagniaScelta) {
 		case "Berardi": 
-			path="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Da stampare\\Barcode\\"; 	//DA CAMBIARE	
+			path="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Da stampare\\Barcode\\"; 	//DA CAMBIARE 	
 			pathAllegati="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Da stampare\\";	//DA CAMBIARE
 			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Archiviati\\"; 	//DA CAMBIARE	
             break; 
@@ -153,34 +153,17 @@ public class archiviaFile extends JFrame {
 //=====================================================================
         
 //Titolo a video della lista
-		JLabel lblListaDeiFile = new JLabel("Fatture archiviate:");
-		lblListaDeiFile.setBounds(36, 42, 233, 39);
-		lblListaDeiFile.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblListaDeiFile);
+		Fatture1 f = new Fatture1(compagniaScelta);
+		JLabel lblListaDeiFile = f.initializeLabel("Fatture archiviate:", 36, 42, 233, 39, 20);     
+		JLabel label = f.initializeLabel("",  777, 23, 158, 90, 20);     
 		
-		JLabel label = new JLabel("");
-		label.setBounds(777, 23, 158, 90);
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(label);
+
+		JButton btnIndietro = f.createJButton("Indietro", "indietro.png", true, 757, 460, 188, 44);
+		JButton btnristampaSelezionati = f.createJButton("Ristampa selezionati", "stampa.png", true, 36, 460, 188, 44);
+        JButton buttonVisualizza = f.createJButton("Visualizza", "visualizza.png", true, 257, 460, 188, 44);
         
-        JButton btnIndietro = new JButton("Indietro");
-        btnIndietro.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
-//imposto l'icona del pulsante===========================================
-        String nomeIconaChiudi = "indietro.png";
-        try {
-			BufferedImage iconaChiudi = ImageIO.read(this.getClass().getResource(nomeIconaChiudi));
-			java.awt.Image newimg4 = iconaChiudi.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaChiudi1 = new ImageIcon(newimg4);  // transform it back, y);
-			btnIndietro.setIcon(iconaChiudi1);
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-//========================================================================
-        btnIndietro.setBounds(757, 460, 188, 44);
         btnIndietro.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		
         		//System.out.println(compagniaScelta);
 				Fatture1 f1 = new Fatture1(compagniaScelta);
 				f1.frmFatturazioneCicloPassivo.setVisible(true);
@@ -188,6 +171,8 @@ public class archiviaFile extends JFrame {
         	}
         });
         contentPane.add(btnIndietro);
+		contentPane.add(lblListaDeiFile);
+		contentPane.add(label);
 
         Object[] columns = {"Nome File", "Da stampare"};
         Object[][] data = null;
@@ -260,8 +245,8 @@ public class archiviaFile extends JFrame {
         getContentPane().add(scrollPane);
         
         JCheckBox checkBox_1 = new JCheckBox("Deseleziona tutti");
-//SELEZIONA TUTTI============================================
         JCheckBox chckbxSelezionaTutti = new JCheckBox("Seleziona tutti");
+//SELEZIONA TUTTI============================================
         chckbxSelezionaTutti.setFont(new Font("Tahoma", Font.PLAIN, 17));
         chckbxSelezionaTutti.setBounds(702, 52, 148, 25);
         chckbxSelezionaTutti.addActionListener(new ActionListener() { 
@@ -274,35 +259,6 @@ public class archiviaFile extends JFrame {
         } );
         contentPane.add(chckbxSelezionaTutti);
 //============================================================
-   
-//DESELEZIONA TUTTI==============================================        
-        
-        checkBox_1.setFont(new Font("Tahoma", Font.PLAIN, 17));
-        checkBox_1.setBounds(502, 52, 160, 25);
-        checkBox_1.addActionListener(new ActionListener() { 
-            public void actionPerformed(ActionEvent e) { 
-                for (int row=0; row < table.getRowCount(); row++) {
-                	chckbxSelezionaTutti.setSelected(false);
-                    table.setValueAt(false, row, 1);
-                }
-            } 
-        } );
-        contentPane.add(checkBox_1);
-        
-        JButton btnristampaSelezionati = new JButton("Ristampa selezionati");
-        btnristampaSelezionati.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
-        String nomeIconaArchivia = "stampa.png";
-        try {
-			BufferedImage iconaArchivia = ImageIO.read(this.getClass().getResource(nomeIconaArchivia));
-			java.awt.Image newimg6 = iconaArchivia.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaArchivia1 = new ImageIcon(newimg6);  // transform it back, y);
-			btnristampaSelezionati.setIcon(iconaArchivia1);
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-        btnristampaSelezionati.setBounds(36, 460, 188, 44);
-        btnristampaSelezionati.setEnabled(true);
         btnristampaSelezionati.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
@@ -310,39 +266,14 @@ public class archiviaFile extends JFrame {
 					archiviaFile a= new archiviaFile(compagniaScelta);
 					a.setVisible(true);
 					dispose();
-				} catch (InvalidPasswordException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (IOException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (PrintException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (PrinterException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (JSchException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				} catch (SftpException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}		
+				} catch (InvalidPasswordException e2) {e2.printStackTrace();} catch (IOException e2) {e2.printStackTrace();} catch (PrintException e2) {e2.printStackTrace();} catch (PrinterException e2) {e2.printStackTrace();} catch (JSchException e2) {e2.printStackTrace();} catch (SftpException e2) {e2.printStackTrace();}		
         	}
         });
-        contentPane.add(btnristampaSelezionati);
+        
         
         int numeroFattureArchiviate=listOfFilesInA.length-1;
-        JLabel lblNewLabel_1 = new JLabel(""+numeroFattureArchiviate);
-        lblNewLabel_1.setFont(new Font("Tahoma", Font.PLAIN, 20));
-        lblNewLabel_1.setBounds(222, 46, 96, 30);
-        contentPane.add(lblNewLabel_1);
+        JLabel lblNewLabel_1 =f.initializeLabel(""+numeroFattureArchiviate, 222, 46, 96, 30, 20);
         
-        JButton buttonVisualizza = new JButton("Visualizza");
-        buttonVisualizza.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        buttonVisualizza.setEnabled(true);
-        buttonVisualizza.setBounds(257, 460, 188, 44);
         buttonVisualizza.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
                 //for (int row=0; row < table.getRowCount(); row++) {
@@ -350,24 +281,9 @@ public class archiviaFile extends JFrame {
                     try {
                   	  //System.out.println(pathArchiviati +(String) table.getValueAt(selectedRow, 2));
                         Desktop.getDesktop().open(new File(pathArchiviati +"\\Barcode\\"+(String) table.getValueAt(selectedRow, 0)));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                        }
+                    } catch (IOException e1) {e1.printStackTrace();}
             		} 
         } );
-        
-      //imposto l'icona del pulsante===========================================
-        String nomeIconaVisualizza = "visualizza.png";
-        try {
-			BufferedImage iconaVisualizza = ImageIO.read(this.getClass().getResource(nomeIconaVisualizza));
-			java.awt.Image newimg6 = iconaVisualizza.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaVisualizza1 = new ImageIcon(newimg6);
-			buttonVisualizza.setIcon(iconaVisualizza1);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-        contentPane.add(buttonVisualizza);
         
         //Con il doppio click del mouse apro il file della riga===========================
         table.addMouseListener(new MouseAdapter() {
@@ -377,13 +293,14 @@ public class archiviaFile extends JFrame {
                       try {
                     	  //System.out.println(pathArchiviati +(String) table.getValueAt(selectedRow, 2));
                           Desktop.getDesktop().open(new File(pathArchiviati +"\\Barcode\\"+(String) table.getValueAt(selectedRow, 0)));
-                      } catch (IOException e1) {
-                          e1.printStackTrace();
-                          }
+                      } catch (IOException e1) { e1.printStackTrace();}
                       }
                   }
               });
-        //================================================================================
+        
+        contentPane.add(buttonVisualizza);
+        contentPane.add(lblNewLabel_1);
+        contentPane.add(btnristampaSelezionati);
      }
 
 //==========================================================================================================
@@ -395,7 +312,7 @@ public class archiviaFile extends JFrame {
 		PrinterJob job = PrinterJob.getPrinterJob();
 		job.setPrintable(printable);
 		job.print();
-		doc.close();	//chiudo il documento
+		doc.close();																	//chiudo il documento
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -418,11 +335,11 @@ public class archiviaFile extends JFrame {
 			stampaDoc(pathArchiviati +"\\Barcode\\" +listaFileDaRistampare.get(i));
 
 //controllo se il file ha allegato la copia di cortesia e se c'è la stampo tutta
-			    File percorsoDaStampare = new File(pathArchiviati);	//DA MODIFICARE
-			    File [] fileInDaStampare = percorsoDaStampare.listFiles();		//elenco tutti i file della cartella del percorso path
+			    File percorsoDaStampare = new File(pathArchiviati);													//DA MODIFICARE
+			    File [] fileInDaStampare = percorsoDaStampare.listFiles();											//elenco tutti i file della cartella del percorso path
 			    //System.out.println("fileInDaStampare " + fileInDaStampare);
 			    String nomeFileArchivaSenzaEstensione = listaFileDaRistampare.get(i).replaceFirst("[.][^.]+$", "");	//prendo solo il nome file escludendo l'estensione
-			    for (int k = 0; k < fileInDaStampare.length; k++){	//ciclo tutti i file nella stampati
+			    for (int k = 0; k < fileInDaStampare.length; k++){													//ciclo tutti i file nella stampati
 
 		    		String nomeFileAllegato = fileInDaStampare[k].getName();
 		    		

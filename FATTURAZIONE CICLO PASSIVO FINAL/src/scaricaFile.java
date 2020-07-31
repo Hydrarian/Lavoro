@@ -117,7 +117,6 @@ public class scaricaFile extends JFrame {
 //inizializzazione del programma e dell'interfaccia grafica===============================================
 	public scaricaFile(String compagniaScelta) throws JSchException, SftpException, IOException {
 		company=compagniaScelta;
-		//System.out.println("company: " + company);
 		setTitle("Fatturazione ciclo passivo");
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -133,23 +132,13 @@ public class scaricaFile extends JFrame {
 		contentPane.setLayout(null);
 		//setUndecorated(true);
 		
-//PULSANTE CHIUDI===============================================================
-		JButton btnChiudi = new JButton("Indietro");
-		btnChiudi.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnChiudi.setBounds(748, 478, 188, 44);
-//imposto l'icona del pulsante===========================================
-        String nomeIconaChiudi = "indietro.png";
-        try {
-			BufferedImage iconaChiudi = ImageIO.read(this.getClass().getResource(nomeIconaChiudi));
-			java.awt.Image newimg4 = iconaChiudi.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaChiudi1 = new ImageIcon(newimg4);  // transform it back, y);
-			btnChiudi.setIcon(iconaChiudi1);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-//======================================================================
+		Fatture1 f = new Fatture1(compagniaScelta);
+		JButton btnChiudi = f.createJButton("Indietro", "indietro.png", true, 748, 478, 188, 44);
+		JButton btnScarica = f.createJButton("Scarica", "scarica.png", true, 36, 478, 188, 44); 		//Pulsante per avviare il download di tutti i file
+
 		contentPane.add(btnChiudi);
+		contentPane.add(btnScarica);
+		
 		btnChiudi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				rimuoviSemaforo();
@@ -160,9 +149,8 @@ public class scaricaFile extends JFrame {
 			}
 		});
 		getContentPane().add(btnChiudi);
-//==============================================================================
-
-/*Connessione SFTP (con passaggio di parametri ( richiama la funzione connetti)===================
+		
+//Connessione SFTP (con passaggio di parametri ( richiama la funzione connetti)===================
 		switch (compagniaScelta) {
 		case "Berardi": 
 			assegnaDati("\\\\BER-OFFICE\\FattureB2B\\For\\BER", "/B2B/PASSIVO/009306_00628991200/", "ftp.archivagroup.it", "berardibulloneriesrl", "fzU4@wUD_Joy");		//DA CAMBIARE la prima stringa
@@ -179,30 +167,10 @@ public class scaricaFile extends JFrame {
         default: 
         	JOptionPane.showMessageDialog(null, "ERRORE! Non è stato possibile raggiungere il server SFTP");
 		}
-//================================================================================================*/
-		
-		//Connessione SFTP (con passaggio di parametri ( richiama la funzione connetti)===================
-				switch (compagniaScelta) {
-				case "Berardi": 
-					assegnaDati("\\\\BER-OFFICE\\FattureB2B\\For\\BER", "/B2B/PASSIVO/009306_00628991200/", "ftp.archivagroup.it", "berardibulloneriesrl", "fzU4@wUD_Joy");		//DA CAMBIARE la prima stringa
-					connetti();
-					break; 
-		        case "Vitman": 
-		        	assegnaDati("\\\\BER-OFFICE\\FattureB2B\\For\\VIT", "/B2B/PASSIVO/009308_02091110409/", "ftp.archivagroup.it", "vitmansrl", "HMFs>3cm@tez");		
-		        	connetti();
-		        	break; 
-		        case "Vibolt": 
-		        	assegnaDati("\\\\BER-OFFICE\\FattureB2B\\For\\VIB", "/B2B/PASSIVO/009307_02100250352/", "ftp.archivagroup.it", "viboltsrlunipersonale", "QeHz^BHK>rGc");		
-					connetti();
-		            break; 
-		        default: 
-		        	JOptionPane.showMessageDialog(null, "ERRORE! Non è stato possibile raggiungere il server SFTP");
-				}
 		//================================================================================================
 		creaListaPerJtextArea();
 
 //area dove viene mostrata la lista dei file retrieved from SFTP=========================================
-		
 		textArea.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		textArea.setEditable(false);
 		textArea.setEnabled(false);
@@ -224,23 +192,7 @@ public class scaricaFile extends JFrame {
 		lblListaDeiFile.setBounds(36, 42, 412, 39);
 		contentPane.add(lblListaDeiFile);
 //==============================================================================
-		
-//Pulsante per avviare il download di tutti i file==========================================================
-		JButton btnScarica = new JButton("Scarica");
-		btnScarica.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		//imposto l'icona del pulsante===========================================
-        String nomeIconaScarica = "scarica.png";
-        try {
-			BufferedImage iconaScarica = ImageIO.read(this.getClass().getResource(nomeIconaScarica));
-			java.awt.Image newimg2 = iconaScarica.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaScarica1 = new ImageIcon(newimg2);  // transform it back, y);
-			btnScarica.setIcon(iconaScarica1);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-//======================================================================
-        btnScarica.setEnabled(true);
+	
 		btnScarica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				btnChiudi.setEnabled(false);
@@ -249,8 +201,7 @@ public class scaricaFile extends JFrame {
 				
 				}
 		});
-		btnScarica.setBounds(36, 478, 188, 44);
-		contentPane.add(btnScarica);
+
 //========================================================================================================00
 		JLabel label = new JLabel("");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -266,15 +217,7 @@ public class scaricaFile extends JFrame {
 		
 		Icon logo1 = new ImageIcon(newimg);  // transform it back
 		label.setIcon(logo1);
-//imposto l'icona del pulsante===========================================
-        String nomeIconaApri = "apri.png";
-        try {
-			BufferedImage iconaApri = ImageIO.read(this.getClass().getResource(nomeIconaApri));
-			java.awt.Image newimg2 = iconaApri.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaApri1 = new ImageIcon(newimg2);
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
+
         
         textArea_1.setBounds(36, 505, 698, 138);
         textArea_1.setCaretPosition(textArea_1.getText().length());		//Autoscroll all'ultima riga
@@ -286,12 +229,12 @@ public class scaricaFile extends JFrame {
         
         progressBar.setStringPainted(false);
         progressBar.setString("Connessione ed ottenimento lista file in corso...");
-        progressBar.setBounds(236, 490, 500, 30);
+        progressBar.setBounds(236, 481, 500, 39);
         contentPane.add(progressBar);
 	}
 //==========================================================================================================
 	
-	//funzione per assegnare i valori giusti alle variabili a seconda della compagnia
+//funzione per assegnare i valori giusti alle variabili a seconda della compagnia
 	public void assegnaDati(String pathDaAssegnare, String pathRemotoDaAssegnare, String hostDaAssegnare, String userDaAssegnare, String pwdDaAssegnare) {
 		path = new File(pathDaAssegnare);
 		nomePathRemoto=pathRemotoDaAssegnare; 	//DA CAMBIARE CON QUELLO GIUSTO PASSIVO
@@ -312,7 +255,6 @@ public class scaricaFile extends JFrame {
 			JOptionPane.showMessageDialog(null, "ERRORE SFTP: Non è stato possibile rimuovere semaforo.sem. Rimuoverlo manualmente.");	
 			e.printStackTrace();
 		}
-//===========================================================================
 	}
 	
 public void start() {
@@ -351,84 +293,81 @@ public void start() {
 
 	public void creaListaPerJtextArea() {
 //LISTA (per far vedere a video i file remoti)=======================================================================
-				elementiLista = "";	
-				for( numeroFileSuSFTP = 0 ; numeroFileSuSFTP < listaPresaDaSFTP.size(); numeroFileSuSFTP++ ) {
-					//System.out.println("listaPresaDaSFTP.get(numeroFileSuSFTP)"+listaPresaDaSFTP.get(numeroFileSuSFTP));
-					elementiLista = elementiLista + listaPresaDaSFTP.get(numeroFileSuSFTP) + "\n"; //prendo il nome di tutti i file remoti per mostrarli dopo a video
-				}
-//=================================================================================================================
+		elementiLista = "";	
+		for( numeroFileSuSFTP = 0 ; numeroFileSuSFTP < listaPresaDaSFTP.size(); numeroFileSuSFTP++ ) {
+			elementiLista = elementiLista + listaPresaDaSFTP.get(numeroFileSuSFTP) + "\n"; //prendo il nome di tutti i file remoti per mostrarli dopo a video
+		}
 	}
+//=================================================================================================================
 	
-//funzione richiamata dal pulsante Scarica per scaricare tutti i file nella cartella locale selezionata
-	public void downloadFile() throws JSchException, SftpException {
-	    
-		   //path = new File("C:/Users/tommolini/Desktop/FatturazioneCP/"); //DA CAMBIARE prendo il path della cartella locale selezionata
-		   nomePath = path.toString();					//converto in stringa il path ottenuto in precedenza per darlo in pasto al get seguente
-
-			dwnInCorso =true;
-			
-			boolean esitoFileCorrente;		//esito del download: positivo=true, errore= false
-			
-			JSch jsch = new JSch();
-	        session = jsch.getSession(user, host, porta);				//creo una nuova sessione verso l'host
-	        session.setPassword(pwd);									//immetto la password
-	        session.setConfig("StrictHostKeyChecking", "no");
-	        //System.out.println("Tentativo di connessione...");
-	        session.connect();											//avvio la sessione
-	        //System.out.println("Connessione stabilita.");
-	        //System.out.println("Canale SFTP in creazione...");
-	        sftpChannel = (ChannelSftp) session.openChannel("sftp");	//creo nuovo canale SFTP
-	        sftpChannel.connect();										//mi connetto al canale
-	        //System.out.println("Canale SFTP creato.");
-	        
-	        progressBar.setString("Download dei file...");
-	        
-	        int i=0;
+//=========INIZIALIZZA LA CONNESSIONE CON L'FTP==============================
+	public void inizializzaConnessione() throws JSchException {
+	   //path = new File("C:/Users/tommolini/Desktop/FatturazioneCP/"); //DA CAMBIARE prendo il path della cartella locale selezionata
+	    nomePath = path.toString();					//converto in stringa il path ottenuto in precedenza per darlo in pasto al get seguente
+		dwnInCorso =true;
+		JSch jsch = new JSch();
+        session = jsch.getSession(user, host, porta);				//creo una nuova sessione verso l'host
+        session.setPassword(pwd);									//immetto la password
+        session.setConfig("StrictHostKeyChecking", "no");
+        //System.out.println("Tentativo di connessione...");
+        session.connect();											//avvio la sessione
+        //System.out.println("Connessione stabilita.");
+        //System.out.println("Canale SFTP in creazione...");
+        sftpChannel = (ChannelSftp) session.openChannel("sftp");	//creo nuovo canale SFTP
+        sftpChannel.connect();										//mi connetto al canale
+        //System.out.println("Canale SFTP creato.");
+        progressBar.setString("Download dei file...");
+	}
+//============================================================================
+	
+	public void scaricaFileDaFTP() throws SftpException {
+		boolean esitoFileCorrente;		//esito del download: positivo=true, errore= false
+        int i=0;
 //SCARICO I FILE IN LOCALE SU nomePath==========================================================================
-		   for (ChannelSftp.LsEntry oListItem : list) { // Iterate objects in the list to get file/folder names.
-			   esitoFileCorrente=true;
-			   
-			   downloadFileInCorso = oListItem.getFilename();
-			   
-			   i++;
-			   segnaLista = segnaLista - 1;
-				try {
-					textArea_1.append("\n [ " + i + " | " + list.size() + " ] Download del file " + downloadFileInCorso +" in corso...");
-					//System.out.println(" nomePathRemoto + downloadFileInCorso, nomePath "+nomePathRemoto+" " + downloadFileInCorso+" " +nomePath);
-					sftpChannel.get(nomePathRemoto + downloadFileInCorso, nomePath);	//DA MODIFICARE //scarico il file nella cartella selezionata			
-					
-					textArea_1.append("\n [ " + i + " | " + list.size() + " ] Download del file " + downloadFileInCorso +" completato.");
-					textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-				} catch (SftpException e) {
-					esitoFileCorrente=false;
-					textArea_1.append("\n [ " + i + " | " + list.size() + " ] Impossibile scaricare il file " + downloadFileInCorso + ". Errore SFTP. Il file non verrà rimosso dal server");
-					JOptionPane.showMessageDialog(null, "Impossibile scaricare il file " + downloadFileInCorso + ". Errore SFTP. Il file non verrà rimosso dal server");
-					textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-				}
-				catch (Exception e) {
-					esitoFileCorrente=false;
-					textArea_1.append("\n [ " + i + " | " + list.size() + " ] Impossibile scaricare il file " + downloadFileInCorso + ". Errore ECCEZIONE. Il file non verrà rimosso dal server");
-					JOptionPane.showMessageDialog(null, "Impossibile scaricare il file " + downloadFileInCorso + ". Errore ECCEZIONE. Il file non verrà rimosso dal server");
-					textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-				}
-				
-//VALUTO L'ESITO DEL DOWNLOAD E, NEL CASO DI NESSUN ERRORE ELIMINO IL FILE SULLA CARTELLA REMOTA=========================
-				if (esitoFileCorrente==true) {
-					sftpChannel.rm(nomePathRemoto + downloadFileInCorso);		//DA CAMBIARE
-					textArea_1.append("\n [ " + i + " | " + list.size() + " ] " + downloadFileInCorso + " rimosso dal server SFTP.");
-					textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-					//System.out.println("FILE RIMOSSO");				
-				} 
+	    for (ChannelSftp.LsEntry oListItem : list) { // Iterate objects in the list to get file/folder names.
+	    	esitoFileCorrente=true;
+	    	downloadFileInCorso = oListItem.getFilename();
+		   
+		   i++;
+		   segnaLista = segnaLista - 1;
+			try {
+				textArea_1.append("\n [ " + i + " | " + list.size() + " ] Download del file " + downloadFileInCorso +" in corso...");
+				sftpChannel.get(nomePathRemoto + downloadFileInCorso, nomePath);	//DA MODIFICARE //scarico il file nella cartella selezionata			
+				textArea_1.append("\n [ " + i + " | " + list.size() + " ] Download del file " + downloadFileInCorso +" completato.");
+				textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+			} catch (SftpException e) {
+				esitoFileCorrente=false;
+				textArea_1.append("\n [ " + i + " | " + list.size() + " ] Impossibile scaricare il file " + downloadFileInCorso + ". Errore SFTP. Il file non verrà rimosso dal server");
+				JOptionPane.showMessageDialog(null, "Impossibile scaricare il file " + downloadFileInCorso + ". Errore SFTP. Il file non verrà rimosso dal server");
+				textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
 			}
+			catch (Exception e) {
+				esitoFileCorrente=false;
+				textArea_1.append("\n [ " + i + " | " + list.size() + " ] Impossibile scaricare il file " + downloadFileInCorso + ". Errore ECCEZIONE. Il file non verrà rimosso dal server");
+				JOptionPane.showMessageDialog(null, "Impossibile scaricare il file " + downloadFileInCorso + ". Errore ECCEZIONE. Il file non verrà rimosso dal server");
+				textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+			}
+			
+//VALUTO L'ESITO DEL DOWNLOAD E, NEL CASO DI NESSUN ERRORE ELIMINO IL FILE SULLA CARTELLA REMOTA=========================
+			if (esitoFileCorrente==true) {
+				sftpChannel.rm(nomePathRemoto + downloadFileInCorso);		
+				textArea_1.append("\n [ " + i + " | " + list.size() + " ] " + downloadFileInCorso + " rimosso dal server SFTP.");
+				textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+				//System.out.println("FILE RIMOSSO");				
+			} 
+		}
 		   rimuoviSemaforo();
 		   dwnInCorso =false;
 		   textArea_1.append("\n Download dei file completato nella cartella: " + nomePath);
 		   textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
 		   //JOptionPane.showMessageDialog(null, "Download dei file completato nella cartella: " + nomePath);	
 		   downloadCompletato=true;
-//RIMUOVO IL SEMAFORO (DOPO CHE HO COMPLETATO L'OPERAZIONE DI DOWNLOAD=============
-		   
-//===========================================================================
+	}
+	
+//funzione richiamata dal pulsante Scarica per scaricare tutti i file nella cartella locale selezionata
+	public void downloadFile() throws JSchException, SftpException {
+		inizializzaConnessione();
+		scaricaFileDaFTP();	   
 	}
 //===========================================================================================================
 
@@ -438,27 +377,24 @@ public void start() {
 		//prende il percorso della cartella per poi ciclare tutti i file all'interno
 		boolean processato = false;				//per capire se ci sono file
 		progressBar.setString("Applicazione del barcode...");
-		
-		nomePath = path.toString();					//converto in stringa il path ottenuto in precedenza per darlo in pasto al get seguente					//scelta cartella
+		nomePath = path.toString();								//converto in stringa il path ottenuto in precedenza per darlo in pasto al get seguente					//scelta cartella
 				
-		new File(path + "/Da stampare/Barcode").mkdir();	//creo la cartella per mettere i file con i barcode
-		File [] files = path.listFiles();		//elenco tutti i file della cartella del percorso path
+		new File(path + "/Da stampare/Barcode").mkdir();		//creo la cartella per mettere i file con i barcode
+		File [] files = path.listFiles();						//elenco tutti i file della cartella del percorso path
 		//System.out.println("files: " + files);
 		String nomeFileSenzaEstensione;
-		String nomeDaBarcode="";					//stringa in cui filtro il codice da mettere (prime 9 cifre del nome)
+		String nomeDaBarcode="";								//stringa in cui filtro il codice da mettere (prime 9 cifre del nome)
 		int posizioneUnderscore;
-		//System.out.println("files.lenght: " + files.length);
 		
 		int lunghezzaListaFile= files.length;
 		
 		for (int i = 0; i < files.length; i++){	//ciclo tutti i file nella cartella
-			
 			//anche se ci sono dei file nella cartella con estensione diversa da .pdf non vengono considerati grazie al filtro
 			if (files[i].isFile() & files[i].getName().endsWith((".pdf")) & !files[i].getName().contains("_A")){ 	//finchè c'è un file (CON FILTRO .PDF)
 				processato=true;
 
 				//ripulisco il file dalla sua estensione (mi serve per sapere cosa scrivere come barcode)
-				nomeFileSenzaEstensione = files[i].getName().replaceFirst("[.][^.]+$", "");	//prendo solo il nome file escludendo l'estenzione
+				nomeFileSenzaEstensione = files[i].getName().replaceFirst("[.][^.]+$", "");							//prendo solo il nome file escludendo l'estenzione
 				//System.out.println("nomeFileSenzaEstensione " + nomeFileSenzaEstensione);
 				
 				//TROVO IL TAG DATARICEZIONE SUL CORRISPONDENTE FILE XML CON NOME UGUALE AL FILE PDF
@@ -496,7 +432,7 @@ public void start() {
                 Image code128Image = code128.createImageWithBarcode(over, BaseColor.BLACK, BaseColor.BLACK);	//colori del barcode
                 code128Image.scalePercent(215, 170);							//scala del barcode
                 
-                
+                										
                 //System.out.println("code128Image.getWidth() "+code128Image.getWidth());
                 //System.out.println("code128Image.getHeight() "+code128Image.getHeight());
                 float x = pageSize.getRight() - code128Image.getWidth() - 370;	//posizionamento del barcode rispetto alle dimensioni della pagina
@@ -518,7 +454,6 @@ public void start() {
 	        	stamper.close();												//chiudo la scrittura
 	            reader.close();													//chiudo la lettura
 	            
-	            //System.out.println("ifffff ");
 	            //elimino i file nella cartella in cui li ho scaricati
 	            files[i].delete();
 	            textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Barcode applicato al file " + files[i].getName());
@@ -529,20 +464,19 @@ public void start() {
 		textArea_1.append("\n Barcode applicato a tutti i file.");
 		textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
 		//JOptionPane.showMessageDialog(null, "Barcode applicato a tutti i file.");	//fine dell'operazione di applicazione barcode
-		
 	}
 //===========================================================================================================
 	
 //Funzione per spostare gli altri file che non sono le fatture pdf, ma sono xml, e _A*.pdf
 	public void muoviAltriFile(String compagniaScelta) throws IOException, JSchException, SftpException {
 		System.out.println("dentro muovialtrifile");
-		nomePath = path.toString();					//converto in stringa il path ottenuto in precedenza per darlo in pasto al get seguente					//scelta cartella
+		nomePath = path.toString();															//converto in stringa il path ottenuto in precedenza per darlo in pasto al get seguente	//scelta cartella
 		progressBar.setString("Spostamento dei file allegati...");
-		new File(path + "/Da stampare/Barcode").mkdir();	//creo la cartella per mettere i file con i barcode
-		File [] files = path.listFiles();		//elenco tutti i file della cartella del percorso path
+		new File(path + "/Da stampare/Barcode").mkdir();									//creo la cartella per mettere i file con i barcode
+		File [] files = path.listFiles();													//elenco tutti i file della cartella del percorso path
 		
 		int lunghezzaListaFile= files.length;
-		for (int i = 0; i < lunghezzaListaFile; i++){	//ciclo tutti i file nella cartella
+		for (int i = 0; i < lunghezzaListaFile; i++){										//ciclo tutti i file nella cartella
 			System.out.println("dentro FOR muovialtrifile");
 			//anche se ci sono dei file nella cartella con estensione diversa da .pdf non vengono considerati grazie al filtro
 			if (files[i].isFile() /*& !files[i].getName().endsWith((".compressed"))*/){ 	//finchè c'è un file (CON FILTRO .PDF)
@@ -550,82 +484,17 @@ public void start() {
 				File dir = new File(path+"\\Da stampare\\");	
 				dir.mkdir();
 				File fileDaSpostare = new File(path + "\\"+ files[i].getName());
-				System.out.println("DOPO IL DIR");
-				//FileUtils.copyFileToDirectory(fileDaSpostare, dir);
 				
 				//vedo di che tipo è il file
 				Tika tika = new Tika();
 			    String filetype = tika.detect(files[i]);
 
-			    if (filetype.compareTo("application/pdf")==0 ) {
-			    	//System.out.println(files[i] + " è di tipo pdf");
-			    	if (!fileDaSpostare.getName().endsWith(".pdf")) {//se l'estensione del file pdf non è .pdf 
-			    		//System.out.println("Il file da cambiare a .pdf è " + fileDaSpostare);
-			    		File nomeFileSenzaEstensione = new File((fileDaSpostare.getName().replaceFirst("[.][^.]+$", "")+".pdf").toString());
-			    		//System.out.println("nomeFileSenzaEstensione " + nomeFileSenzaEstensione);
-			    		
-			    		File nomeFileSenzaEstensione2 = new File(path+"\\Da stampare\\"+nomeFileSenzaEstensione);
-			    		//System.out.println("nomeFileSenzaEstensione " + nomeFileSenzaEstensione2);
-			    		
-			    		boolean b = fileDaSpostare.renameTo(nomeFileSenzaEstensione2);
-			    		//JOptionPane.showMessageDialog(null, "Ho rinominato il file in "+ nomeFileSenzaEstensione2);
-
-			    		//System.out.println("valore di b "+ b);
-			    		//System.out.println("fileDaSpostare " + fileDaSpostare );
-			    		//int nuovoNomeConGiustaEstensione = fileDaSpostare.getName().toString().lastIndexOf('.');
-			    	} else {
-			    		//System.out.println("Ho spostato l'allegato .pdf: " + fileDaSpostare);
-			    		FileUtils.copyFileToDirectory(fileDaSpostare, dir);
-			    	}
-					//FileUtils.copyFileToDirectory(fileDaSpostare, dir);
-					//System.out.println("prima del delete");
-					files[i].delete();
-					//System.out.println("dopo il delete");
-		            textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto spostando il file " + files[i].getName());
-		            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-				} else if (filetype.compareTo("application/xml")==0){
-					FileUtils.copyFileToDirectory(fileDaSpostare, dir);
-					
-					files[i].delete();
-		            textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto spostando il file " + files[i].getName());
-		            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-				}
-
-			    else if (filetype.compareTo("application/zip")==0) {
-					System.out.print(files[i] + " è di tipo zip");
-					//creo una cartella in stampati col nome del file zippato
-					File dirZippato = new File(path+ "/Da stampare/" + files[i].getName().toString().substring(0, files[i].getName().toString().lastIndexOf('.')));
-					System.out.println("Cartella del file compressed: " + dirZippato.toString());
-					dirZippato.mkdir();
-					
-					//unzippo il file nella cartella stampati
-					 String fileZip = path + "\\"+ files[i].getName();		//percorso+nome del file compresso
-					 //System.out.println("fileZip " + fileZip);
-					 textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto estraendo i file conenuti in " + files[i].getName());
-			            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
-				        byte[] bufferZ = new byte[1024];
-				        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
-				        ZipEntry zipEntry = zis.getNextEntry();
-				        while (zipEntry != null) {
-				        	System.out.println("zipEntry: " + zipEntry);
-				            File newFile = newFile(dirZippato, zipEntry);
-				            FileOutputStream fos = new FileOutputStream(newFile);
-				            int len;
-				            while ((len = zis.read(bufferZ)) > 0) {
-				                fos.write(bufferZ, 0, len);
-				            }
-				            fos.close();
-				            zipEntry = zis.getNextEntry();
-				        }
-				        zis.closeEntry();
-				        zis.close();
-				        
-				}
+			    analizzaEstensioneFile(filetype,fileDaSpostare, dir, files[i], i, lunghezzaListaFile);
 
 	            //elimino i file nella cartella in cui li ho scaricati
 				files[i].delete();
 	            textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto spostando il file " + files[i].getName());
-	            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+	            textArea_1.setCaretPosition(textArea_1.getText().length());					//Scrollo automaticamente all'ultima riga della textarea
 			} 
 		}
 		
@@ -645,7 +514,6 @@ public void start() {
         if (!destFilePath.startsWith(destDirPath + File.separator)) {
             throw new IOException("Entry is outside of the target dir: " + zipEntry.getName());
         }
-         
         return destFile;
     }
 	
@@ -664,11 +532,64 @@ public void start() {
 				}
 			}
 		segnaLista = list.size();
-
 		return list;
 	}
 //====================================================================================
-	
+	public void analizzaEstensioneFile(String filetype, File fileDaSpostare, File dir, File file, int i, int lunghezzaListaFile) throws IOException {
+		if (filetype.compareTo("application/pdf")==0 ) {
+	   
+	    	if (!fileDaSpostare.getName().endsWith(".pdf")) {//se l'estensione del file pdf non è .pdf 
+	    		
+	    		File nomeFileSenzaEstensione = new File((fileDaSpostare.getName().replaceFirst("[.][^.]+$", "")+".pdf").toString());	
+	    		File nomeFileSenzaEstensione2 = new File(path+"\\Da stampare\\"+nomeFileSenzaEstensione);
+	    		boolean b = fileDaSpostare.renameTo(nomeFileSenzaEstensione2);
+
+	    	} else {
+	    		
+	    		FileUtils.copyFileToDirectory(fileDaSpostare, dir);
+	    	}
+
+			file.delete();
+            textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto spostando il file " + file.getName());
+            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+            
+		} else if (filetype.compareTo("application/xml")==0){
+			
+			FileUtils.copyFileToDirectory(fileDaSpostare, dir);
+			file.delete();
+            textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto spostando il file " + file.getName());
+            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+		}
+
+	    else if (filetype.compareTo("application/zip")==0) {
+			System.out.print(file + " è di tipo zip");
+			//creo una cartella in stampati col nome del file zippato
+			File dirZippato = new File(path+ "/Da stampare/" + file.getName().toString().substring(0, file.getName().toString().lastIndexOf('.')));
+			System.out.println("Cartella del file compressed: " + dirZippato.toString());
+			dirZippato.mkdir();
+			
+			//unzippo il file nella cartella stampati
+			 String fileZip = path + "\\"+ file.getName();		//percorso+nome del file compresso
+			 textArea_1.append("\n[ " + i + " | " +lunghezzaListaFile + "] Sto estraendo i file conenuti in " + file.getName());
+	            textArea_1.setCaretPosition(textArea_1.getText().length());		//Scrollo automaticamente all'ultima riga della textarea
+		        byte[] bufferZ = new byte[1024];
+		        ZipInputStream zis = new ZipInputStream(new FileInputStream(fileZip));
+		        ZipEntry zipEntry = zis.getNextEntry();
+		        while (zipEntry != null) {
+		        	System.out.println("zipEntry: " + zipEntry);
+		            File newFile = newFile(dirZippato, zipEntry);
+		            FileOutputStream fos = new FileOutputStream(newFile);
+		            int len;
+		            while ((len = zis.read(bufferZ)) > 0) {
+		                fos.write(bufferZ, 0, len);
+		            }
+		            fos.close();
+		            zipEntry = zis.getNextEntry();
+		        }
+		        zis.closeEntry();
+		        zis.close();
+		}
+	}
 //connessione al server SFTP con dati presi dalla precedente selezione nella combobox===========================
 	public void connetti(/*String host, String user, String pwd, int porta*/) throws JSchException, SftpException, IOException {
 		

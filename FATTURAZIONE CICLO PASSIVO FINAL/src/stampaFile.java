@@ -126,21 +126,21 @@ public class stampaFile extends JFrame {
 		switch (compagniaScelta) {
 		case "Berardi": 
 			pathDaStampare="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Da stampare\\";
-			pathBarcode="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Da stampare\\Barcode\\"; 	//DA CAMBIARE	
-			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Archiviati\\"; 	//DA CAMBIARE	
-			//pathDaStampare="C:\\Users\\tommolini\\Desktop\\FCP\\Da stampare\\";
-			//pathBarcode="C:\\Users\\tommolini\\Desktop\\FCP\\Da stampare\\"; 	//DA CAMBIARE	
-			//pathArchiviati="C:\\Users\\tommolini\\Desktop\\FCP\\Archiviati\\"; 	//DA CAMBIARE	
+			pathBarcode="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Da stampare\\Barcode\\"; 	
+			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\BER\\Archiviati\\"; 				
+			//pathDaStampare="C:\\Users\\tommolini\\Desktop\\FCP\\Da stampare\\";	//DEBUG	
+			//pathBarcode="C:\\Users\\tommolini\\Desktop\\FCP\\Da stampare\\"; 		//DEBUG	
+			//pathArchiviati="C:\\Users\\tommolini\\Desktop\\FCP\\Archiviati\\"; 	//DEBUG	
             break; 
 		case "Vitman": 
 			pathDaStampare="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Da stampare\\";
-			pathBarcode="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Da stampare\\Barcode\\"; 	//DA CAMBIARE	
-			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Archiviati\\"; 	//DA CAMBIARE	
+			pathBarcode="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Da stampare\\Barcode\\"; 	
+			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\VIT\\Archiviati\\"; 	
             break; 
 		case "Vibolt": 
 			pathDaStampare="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Da stampare\\";
-			pathBarcode="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Da stampare\\Barcode\\"; 	//DA CAMBIARE	
-			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Archiviati\\"; 	//DA CAMBIARE	
+			pathBarcode="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Da stampare\\Barcode\\"; 	
+			pathArchiviati="\\\\BER-OFFICE\\FattureB2B\\For\\VIB\\Archiviati\\"; 		
             break; 
 		default:
 			//System.out.println("Errore in stampaFile.");
@@ -166,41 +166,26 @@ public class stampaFile extends JFrame {
 //=====================================================================
         
 //Titolo a video della lista
-		JLabel lblListaDeiFile = new JLabel("PDF fatture:");
-		lblListaDeiFile.setBounds(36, 42, 130, 39);
-		lblListaDeiFile.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		contentPane.add(lblListaDeiFile);
+		Fatture1 f = new Fatture1(compagniaScelta);
+		JLabel lblListaDeiFile = f.initializeLabel("Lista PDF", 36, 42, 130, 39, 20);
+		JLabel label = f.initializeLabel("", 777, 23, 158, 90, 14);        
 		
-		JLabel label = new JLabel("");
-		label.setBounds(777, 23, 158, 90);
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		contentPane.add(label);
+        JButton btnIndietro = f.createJButton("Indietro", "indietro.png", true, 757, 460, 188, 44);
+        JButton buttonVisualizza = f.createJButton("Visualizza", "visualizza.png", true, 257, 460, 188, 44);
+        JButton btnStampaSelezionati = f.createJButton("Stampa selezionati", "stampa.png", true, 36, 460, 188, 44);
         
-        JButton btnIndietro = new JButton("Indietro");
-        btnIndietro.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
-//imposto l'icona del pulsante===========================================
-        String nomeIconaChiudi = "indietro.png";
-        try {
-			BufferedImage iconaChiudi = ImageIO.read(this.getClass().getResource(nomeIconaChiudi));
-			java.awt.Image newimg4 = iconaChiudi.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaChiudi1 = new ImageIcon(newimg4);  // transform it back, y);
-			btnIndietro.setIcon(iconaChiudi1);
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-        
-//========================================================================
-        btnIndietro.setBounds(757, 460, 188, 44);
         btnIndietro.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		//System.out.println(compagniaScelta);
 				Fatture1 f1 = new Fatture1(compagniaScelta);
 				f1.frmFatturazioneCicloPassivo.setVisible(true);
 				dispose();
         	}
         });
+        
+        
         contentPane.add(btnIndietro);
+		contentPane.add(lblListaDeiFile);
+		contentPane.add(label);
 
         Object[] columns = {"Nome File", "Da stampare"};		//nome colonne tabella
         
@@ -211,12 +196,10 @@ public class stampaFile extends JFrame {
     	
 		for (File fileA : listOfFilesInA) {	
 			if (fileA.isFile()) {
-				//System.out.print("fileA.getName() " + fileA.getName() + "    ");
-				//System.out.print(FilenameUtils.getExtension(fileA.toString())+ "    ");
 				
 				//rendo visibili da stampare solo i file delle fatture in con estensione .pdf e non gli allegati (che hanno _A nel nome)
 			if ((fileA.getName().toString().endsWith(".pdf")) && (!fileA.getName().contains("_A"))) {	
-				//System.out.println("IF");
+
        	 		listaFile.add(fileA.getName());		//aggiungo i nomi alla lista che popolerà la tabella
 				} /*else {	//gli altri file (xml e allegati) li archivio subito
 					//System.out.println("ELSE");
@@ -229,7 +212,6 @@ public class stampaFile extends JFrame {
 			}
 		}
 		
-		//System.out.println(listaFile);
 		Object[] arrayDiFile = new Object[listaFile.size()];
 		arrayDiFile = listaFile.toArray(arrayDiFile);
     	
@@ -288,11 +270,10 @@ public class stampaFile extends JFrame {
                 }
             } 
         } );
-        contentPane.add(chckbxSelezionaTutti);
+        
 //============================================================
    
 //DESELEZIONA TUTTI==============================================        
-        
         checkBox_1.setFont(new Font("Tahoma", Font.PLAIN, 17));
         checkBox_1.setBounds(490, 52, 160, 25);
         checkBox_1.addActionListener(new ActionListener() { 
@@ -303,22 +284,7 @@ public class stampaFile extends JFrame {
                 }
             } 
         } );
-        contentPane.add(checkBox_1);
-        
-        JButton btnStampaSelezionati = new JButton("Stampa selezionati");
-        btnStampaSelezionati.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        
-        String nomeIconaStampa = "stampa.png";
 
-        try {
-			BufferedImage iconaStampa = ImageIO.read(this.getClass().getResource(nomeIconaStampa));
-			java.awt.Image newimg2 = iconaStampa.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaStampa1 = new ImageIcon(newimg2);  // transform it back, y);
-			btnStampaSelezionati.setIcon(iconaStampa1);
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-        btnStampaSelezionati.setBounds(36, 460, 188, 44);
         btnStampaSelezionati.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		try {
@@ -332,19 +298,11 @@ public class stampaFile extends JFrame {
 				}
         	}
         });
-        contentPane.add(btnStampaSelezionati); 
-        
+
         numeroDiFileDaStampare=listaFile.size();
-        JLabel label_1 = new JLabel(""+numeroDiFileDaStampare);
-        label_1.setFont(new Font("Tahoma", Font.BOLD, 20));
-        label_1.setBounds(157, 51, 77, 21);
-        contentPane.add(label_1);
+        JLabel label_1 =  f.initializeLabel(""+numeroDiFileDaStampare, 157, 51, 77, 21, 20);  
      //===============================================================	
         
-        JButton buttonVisualizza = new JButton("Visualizza");
-        buttonVisualizza.setFont(new Font("Tahoma", Font.PLAIN, 14));
-        buttonVisualizza.setEnabled(true);
-        buttonVisualizza.setBounds(257, 460, 188, 44);
         buttonVisualizza.addActionListener(new ActionListener() { 
             public void actionPerformed(ActionEvent e) { 
                 //for (int row=0; row < table.getRowCount(); row++) {
@@ -358,22 +316,10 @@ public class stampaFile extends JFrame {
                // }
             } 
         } );
-        
-      //imposto l'icona del pulsante===========================================
-        String nomeIconaVisualizza = "visualizza.png";
-        try {
-			BufferedImage iconaVisualizza = ImageIO.read(this.getClass().getResource(nomeIconaVisualizza));
-			java.awt.Image newimg6 = iconaVisualizza.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
-			Icon iconaVisualizza1 = new ImageIcon(newimg6);
-			buttonVisualizza.setIcon(iconaVisualizza1);
-		} catch (IOException e2) {
-			// TODO Auto-generated catch block
-			e2.printStackTrace();
-		}
-        contentPane.add(buttonVisualizza);
+
         
         
-        //Con il doppio click del mouse apro il file della riga===========================
+//Con il doppio click del mouse apro il file della riga===========================
         table.addMouseListener(new MouseAdapter() {
               public void mouseClicked(MouseEvent e) {
                   if (e.getClickCount() == 2) {
@@ -387,7 +333,13 @@ public class stampaFile extends JFrame {
                       }
                   }
               });
-        //================================================================================
+//================================================================================
+        
+        contentPane.add(btnStampaSelezionati); 
+        contentPane.add(checkBox_1);
+        contentPane.add(chckbxSelezionaTutti);
+        contentPane.add(buttonVisualizza);
+        contentPane.add(label_1);
 }
 	
 	//funzione per la stampa dei file
@@ -464,7 +416,6 @@ public void stampaFatture(List<String> listaFileDaStampare) throws Exception, Pr
 	@SuppressWarnings("deprecation")
 	public void vaiInStampa(JTable tabella) throws Exception {
 		int rows = tabella.getRowCount();
-		
 		
 		//prendo tutti i valori true della seconda colonna della tabella e memorizzo in nomi dei file (prima colonna) in un arraylist che poi manderò in stampa
 		for(int i=0; i<rows; i++) {
