@@ -28,7 +28,7 @@ public class Fatture1 extends JFrame {
 
 	
 	JFrame frmFatturazioneCicloPassivo;
-	public String msg; 								//stringa dove memorizzo l'azienda scelta
+	public String msg; 								//stringa dove memorizzo l'azienda scelta.
 	JProgressBar progressBar = new JProgressBar();
 	static String compagniaScelta= null;
 	JButton btnScarica = createJButton("Scarica", "scarica.png", false, 115, 300, 217, 48);

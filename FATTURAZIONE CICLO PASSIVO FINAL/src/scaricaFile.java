@@ -167,7 +167,7 @@ public class scaricaFile extends JFrame {
         default: 
         	JOptionPane.showMessageDialog(null, "ERRORE! Non è stato possibile raggiungere il server SFTP");
 		}
-		//================================================================================================
+		//=================================================================================================
 		creaListaPerJtextArea();
 
 //area dove viene mostrata la lista dei file retrieved from SFTP=========================================

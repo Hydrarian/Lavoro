@@ -79,7 +79,7 @@ public class archiviaFile extends JFrame {
     File[] listaF;
     ChannelSftp sftpChannel;			//canale SFTP per il trasferimento dei file
     Session session;					//nome delle sessione SFTP
-    String downloadFileInCorso;			//nome del file che si sta scaricando
+    String downloadFileInCorso;			//nome del file che si sta scaricando.
     int segnaLista;						//numero di file rimanenti per la fine del download
     String nomePath;
     String path;						//PATH IN CUI HO SCARICATO LE FATTURE CICLO PASSIVO E A CUI HO APPLICATO IL BARCODE

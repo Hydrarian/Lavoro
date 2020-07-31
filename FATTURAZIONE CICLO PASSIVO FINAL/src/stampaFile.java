@@ -163,7 +163,7 @@ public class stampaFile extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-//=====================================================================
+//======================================================================
         
 //Titolo a video della lista
 		Fatture1 f = new Fatture1(compagniaScelta);
